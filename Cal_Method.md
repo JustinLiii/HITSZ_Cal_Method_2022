@@ -677,3 +677,70 @@ $$
 <br>
 
 ## 数值积分
+### 机械求积公式
+$$
+Q(f) = \sum_{j=0}^nH_jf(x_j)
+$$
+其中 $x_j$ 成为求积节点
+
+一般来说， $H_j$ 只依赖于 $x_j$ 的选取
+#### 求积公式的阶r —— 对次数不超过r的多项式均能精确成立，对r+1次的多项式至少有一个不能精确成立
+<br>
+
+#### 开型求积公式、闭型求积公式、半开半闭
+<br>
+
+#### 对n+1个求积节点，总存在系数H0到Hn使求积公式至少具有n次代数精度
+<br>
+<br>
+
+### 插值求积公式（属于机械求积公式）
+$$
+H_j = \int_a^bl_j(x)dx
+$$
+
+### 等距节点的Newton-Cotes公式
+将区间划分为 $n$ 等分，步长为 $h = \frac{b-a}{n}$
+$$
+x_i = a+ ih
+$$
+$$
+H_j = \int_a^b l_j(x)dx = \frac{(-1)^{n-j}h}{j!(n-j)!}\int_0^n \prod\limits_{i = 0 \atop i \neq j}^n(t-i)dt
+$$
+令
+$$
+C_j(f) = \frac{H_j}{b-a}
+$$
+称 $C_j$ 为Cotes系数
+
+求积公式可改写为
+$$
+Q_n(f) = (b-a)\sum_{j=0}^nC_jf(x_j)
+$$
+或
+$$
+\int_a^bf(x)dx = Ah\sum_{j=0}^nW_jf(x_j) + E(f)
+$$
+其中
+$$
+H_j = W_jAh, C_j = \frac{W_jA}{n}
+$$
+<br>
+
+#### 梯形公式 (n = 1)
+$$
+Q_1(f) = \frac{b-a}{2}[f(a) + f(b)]
+$$
+#### Simpson公式（抛物线公式） (n = 2)
+$$
+Q_2(f) = \frac{b-a}{6}[f(a) + 4f(\frac{a+b}{2}) + f(b)]
+$$
+#### Cotes公式 (n = 4)
+$$
+Q_4(f) = \frac{2h}{45}[7f(a)+ 32f(a+h) + 12f(a+2h) + 32f(a+3h) + 7f(b)]
+$$
+#### 开型N-C公式
+n = 2时（中点公式）
+$$
+\int_a^b f(x)dx = (b-a)f(\frac{a+b}{2})+\frac{1}{24}(b-a)^3f''(\xi)
+$$
