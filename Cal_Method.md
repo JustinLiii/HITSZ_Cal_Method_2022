@@ -562,3 +562,118 @@ $$
 $$
 T_n(-x) = (-1)^nT_n(x)
 $$
+$$
+A_n = 2^{n-1},A_0=1
+$$
+<br>
+<br>
+
+##### 第二类Chebyshev多项式
+在区间[-1,1]上，带权函数$\rho(x)=\sqrt{1-x^2}$
+
+$$
+s_n = \frac{sin[(n+1)arccosx]}{\sqrt{1-x^2}}
+$$
+或
+$$
+x = cos\theta \\
+s_n(x) = \frac{sin(n+1)\theta}{sin\theta}
+$$
+递推式
+$$
+s_{n+1}(x)=2xs_n(x)-s_{n-1}(x) \\
+s_0(x) = 1, s_1(x) = 2x
+$$
+<br>
+<br>
+
+##### Laguerre多项式
+在区间$[0,+\infty],\rho(x) = e^{-x}$
+表达式
+$$
+L_n(x) = e^x\frac{d^n}{dx^n}(x^ne^{-x})
+$$
+递推公式
+$$
+L_{n+1}(x) = (2n+1-x)L_n(x)-n^2L_{n-1}(x)
+$$
+<br>
+<br>
+
+##### Hermite 多项式
+在区间$(-\infty,+\infty), \rho(x) = e^{-x^2}$
+表达式
+$$
+H_n(x) = (-1)^ne^{x^2}\frac{d^n}{dx^n}e^{-x^2}
+$$
+递推公式
+$$
+H_{n+1}(x) = 2xH_n(x)-2nH_{n-1}(x) \\
+H_0(x) = 1, H_1(x) = 2x
+$$
+<br>
+<br>
+
+#### 最佳平方逼近问题及其解法
+寻求线性无关函数集的线性组合
+$$
+\varphi(x) = \sum_{j=1}^{n}a_j\varphi_j(x)
+$$
+使
+$$
+||f-\varphi||_2^2 \overset{def}{=}\int_a^b\rho(x)[f(x)-\varphi(x)]^2dx
+$$
+最小
+
+最佳平方逼近函数
+$$
+\begin{align*}
+    \varphi^* &= \argmin_{\varphi} ||f-\varphi||_2^2 \\
+    &= a_0^* + a_1^*x + \cdots + a_n^*x^n
+\end{align*}
+$$
+##### 可通过方程组求解
+$$
+\begin{pmatrix}
+    (\varphi_0,\varphi_0) & (\varphi_1,\varphi_0) & \cdots & (\varphi_n,\varphi_0)\\
+    (\varphi_0,\varphi_1) & (\varphi_1, \varphi_1) & & \vdots\\
+    \vdots & & \ddots \\
+    (\varphi_0, \varphi_n)& \cdots& & (\varphi_n, \varphi_n)
+\end{pmatrix}
+\begin{pmatrix}
+    a_0 \\ a_1 \\ \vdots \\ a_n
+\end{pmatrix}
+=
+\begin{pmatrix}
+    (f,\varphi_0) \\ (f,\varphi_1) \\ \vdots \\ (f,\varphi_n)
+\end{pmatrix}
+$$
+
+##### Hilbert矩阵
+当选用的线性无关组为
+$$
+\Phi = M_n = Span\{1,x,\cdots,x^n\}
+$$
+对应的方程组的系数矩阵为Hilbert矩阵
+$$
+\begin{bmatrix}
+    1 & 1/2 & \cdots & 1/(n+1) \\
+    1/2 & 1/3 \cdots & 1/(n+2) \\
+    \vdots & \vdots & \ddots & \vdots \\
+    1/(n+1) & 1/(n+2) & \cdots & 1/(2n+1)
+\end{bmatrix}
+$$
+<br>
+
+##### 用正交函数族做平方逼近
+$$
+a_k^* = \frac{(f,\varphi_k)}{(\varphi_k,\varphi_k)} = \frac{(f,\varphi_k)}{||\varphi_k||_2^2}
+$$
+$$
+\varphi^*(x) = \sum_{k=0}^n \frac{(f,\varphi_k)}{||\varphi_k||_2^2} \varphi_k(x)
+$$
+该式子又称广义Fourier展开，系数$a_k^*$称为广义Fourier系数
+<br>
+<br>
+
+## 数值积分
