@@ -875,8 +875,150 @@ $$
     T_0(h) = T(h) \\
     \\
 
-    T_m(h) = \frac{T_{m-1}(\frac{h}{2}) - (\frac{1}{2})^{2m}T_{m-1}(h)}{1-(\frac{1}{2})^{2m}} \\ss
+    T_m(h) = \frac{T_{m-1}(\frac{h}{2}) - (\frac{1}{2})^{2m}T_{m-1}(h)}{1-(\frac{1}{2})^{2m}} \\
     \\
     =\frac{4^mT_{m-1}(\frac{h}{2})-T_{m-1}(h)}{4^m-1}
+\end{cases}
+$$
+<br>
+<br>
+
+## 常微分方程数值解法
+已知
+$$
+\begin{cases}
+    \frac{dy}{dx} = f(x,y(x)) \\
+    y_0 = \eta
+\end{cases}
+$$
+### Euler法
+在 $x_n$ 点展开 $y(x_{n+1})$，略去高次项，得
+$$
+y(x_{n+1}) \approx y(x_n)+hf(x,y(x))
+$$
+也可用差商，数值积分法推出此公式
+
+### 式子右端有y_n+1的方法成为隐式方法，不超过y_n的方法成为显式方法
+
+### 线性多步法
+
+#### C0=C1=0时，称该方法是相容的
+
+$$
+y_{n+1} = \sum_{i=0}^p a_iy_{n-i} + h\sum_{i = -1}^pb_iy'_{n-i}
+$$
+#### 当 a_i 和 b_i 不同时为0时，称式子为 p+1 步法， p=0 时，为单步法
+#### 实质上是用p+1阶差分方程来逼近一阶差分方程
+
+#### 当y(x)为n阶时式子准确成立，而y(x)为n+1阶时式子不准确成立时，称该方法（的精度）是n阶的
+<br>
+
+#### 局部截断误差Tn
+$$
+T_n = y(x_{n+1}) - \sum_{i=0}^p a_iy_{n-i} + h\sum_{i = -1}^pb_iy'_{n-i}
+$$
+将上式泰勒展开后整理合并可得
+$$
+T_n = C_0y(x_n) + C_1hy'(x_n) + \cdots + C_qh^qy^{(q)}(x_n) + \cdots
+$$
+其中
+$$
+\begin{cases}
+    C_0 = 1 - \sum_{i=0}^pa_i, \\
+    C_1 = 1-[\sum_{i = 0}^p(-i)a_i+\sum_{i=-1}^pb_i] \\
+    \vdots \\
+    自己推！
+\end{cases}
+$$
+
+若 $C_0 = C_1 = \cdots = C_r = 0, C_{r+1} \neq 0$ 则公式是r阶的方法
+
+#### 使用待定系数法构造线性多步方法
+
+### 线性多步法的收敛性
+成立:
+$$
+\lim_{h \to 0}y_k(h) = \eta = y_0
+$$
+即当迭代间隔趋近于0，迭代终点趋近于0时（在原地迭代），第k次迭代法趋近于初值
+
+当
+$$
+\lim\limits_{h \to 0 \atop n \to \infty}y_n = y(x) 时
+$$
+称该方法收敛
+即加密间隔，无限阶推至目标点
+<br>
+<br>
+
+#### 第一特征多项式
+$$
+\rho(r) = r^{p+1} - \sum_{i=0}^pa_ir^{p-i}
+$$
+
+#### 第二特征多项式
+$$
+\sigma(r) = \sum_{i=-1}^pb_ir^{p-i}
+$$
+
+#### 根条件
+当第一特征多项式的所有根的模均不大于1，且模为1的根是单根，则称满足根条件
+
+#### 收敛条件
+多步法相容，且满足根条件
+
+#### 相容与特征多项式
+$$
+\rho(1) = 0, \rho'(1) = \sigma(1)
+$$
+等价于相容
+<br>
+<br>
+
+### Runge-Kutta 法
+
+#### 一般形式
+$$
+\begin{cases}
+    y_{n+1} = y_n + h\sum_{i=1}^sb_iK_i \\
+    K_i = f(x_n+c_ih, y_n+h\sum_{j=1}^{s-1}a_{ij}K_j)
+\end{cases}
+$$
+
+#### 二级RK法
+$$
+\begin{cases}
+    y_{n+1} = y_n + hb_1K_1+hb_2K_2 \\
+    K_1 = f(x_n,y_n), \ K_2 = f(x_n+c_2h,y_n+ha_{21}K_1)
+\end{cases}
+$$
+
+##### 中点方法c2 = 1/2
+$$
+y_{n+1} = y_n + hf[x_n + \frac{h}{2}, y_n + \frac{h}{2}f(x_n,y_n)]
+$$
+
+##### Heun方法 c2 = 2/3
+$$
+y_{n+1} = y_n + \frac{h}{4} \left[ f(x_n,y_n) + 3f \left( x_n + \frac{2}{3}h, y_n+\frac{2}{3}hf(x_n,y_n) \right) \right]
+$$
+
+##### 改进Euler方法c2=1
+$$
+y_{n+1} = y_n + \frac{h}{2}[f(x_n,y_n) + f(x_n+h,y_n+hf(x_n,y_n))]
+$$
+<br>
+<br>
+
+#### 四级RK法
+经典方法公式
+$$
+\begin{cases}
+    y_{n+1} = y_n + \frac{h}{6}(K_1 + 2K_2 + 2K_3 + K_4) \\
+    \\
+    K_1 = f(x_n,y_n) \\
+    K_2 = f\left(x_n+\frac{h}{2}, y_n +\frac{h}{2}K_1\right) \\
+    K_3 = f\left(x_n+\frac{h}{2}, y_n +\frac{h}{2}K_2\right) \\
+    K_4 = f(x_n + h, y_n+hK_3)
 \end{cases}
 $$
