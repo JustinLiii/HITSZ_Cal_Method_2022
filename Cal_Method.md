@@ -16,6 +16,13 @@ $$
     ab &\lt 0 
 \end{align*}
 $$
+#### 误差
+$$
+|\alpha - x_n| \leq \frac{b-a}{2^{n+1}}
+$$
+#### 不能求偶数重根
+#### 收敛慢
+#### 不能推广到方程组
 <br>
 <br>
 
@@ -62,8 +69,15 @@ $$
 \end{align}
 $$
 式（1）保证有根，式（2）保证函数单调，式（3）保证凹凸向不变，式（4）保证迭代不会到[a,b]外面
+
+#### 误差
+$$
+|\varepsilon_{i+1}| = \frac{1}{2}|f(x_i)|^{2}|g^{(2)}(\eta)| \\
+= \frac{(f(x_i))^2f''(x)}{(f'(x))^3}
+$$
 <br>
 <br>
+
 #### 简化牛顿法
 $$x_{i+1} = x_i - \frac{f(x)}{C} $$
 收敛阶为一阶
@@ -134,6 +148,33 @@ $$u(x) = \frac{f(x)}{f'(x)} = \frac{1}{r}\frac{f^{(r)}(\xi_1)}{f^{(r)}(\xi_2)}(x
 $u(x)$ 的零点符合 $x = \alpha$，也就是 $f(x)$ 的零点
 
 对其他方法，也可将求 $f(x)$ 的零点转化为求 $u(x)$ 的零点，但由于需要计算一阶导数，计算效率可能不高，且 $f'(x)$ 可能不连续
+<br>
+<br>
+
+### 迭代加速法
+#### 线性收敛的Aitken加速
+$$
+\lim_{i \to +\infty} \frac{\alpha - x_{i+1}}{\alpha - x_i} = C
+$$
+i很大时
+$$
+\begin{align*}
+    \alpha - x_{i+1} &\approx C(\alpha - x_i) \\
+    \alpha - x_{x+2} &\approx C(\alpha - x_{i+1}) 
+\end{align*}
+$$
+两式相除，整理得
+$$
+\alpha \approx \frac{x_ix_{i+2} - x_{i+1}^2}{x_{i+2}-2x_{i+1} + x_i} = \overline{x_{i+1}}
+$$
+#### Steffensen加速
+用Aitken的方法从 $\varphi(x)$ 构造 $\psi(x)$ 迭代式
+$$
+\psi = x - \frac{[\varphi(x) - x]^2}{\varphi(\varphi(x)) - 2 \varphi(x) + x}
+$$
+##### 可将不收敛的迭代式加速为收敛
+<br>
+<br>
 
 ## 线性方程组数值解
 
@@ -431,7 +472,7 @@ $$
 #### 插值函数的余项
 ##### 满足[a,b]上存在n阶连续导数，(a,b)上存在n+1阶导数
 $$
-E(x) = \frac{f^{(n+1)(\xi)}}{(n+1)!}p_{n+1}(x)
+E(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}p_{n+1}(x)
 $$
 其中
 $$
@@ -743,4 +784,99 @@ $$
 n = 2时（中点公式）
 $$
 \int_a^b f(x)dx = (b-a)f(\frac{a+b}{2})+\frac{1}{24}(b-a)^3f''(\xi)
+$$
+
+#### 数值稳定性
+若存在舍入误差使计算时 $\tilde{f}(x_j) - f(x_j) = \varepsilon_j$
+
+有误差(若Cotes系数全正)
+$$
+|\eta| = (b-a)\sum_{j=0}^n C_j \varepsilon_j \leq (b-a)\varepsilon, \ \ \varepsilon = \max_j |\varepsilon_j|
+$$
+若Cotes系数有正有负，
+$$
+\sigma_n = \sum_{j=0}^n |C_j| \gt 1
+$$
+n越大， $\sigma_n$ 越大，舍入误差对误差的影响越坏. 只有当 $m \leq 7, n = 9$ 时，Cotes系数才是全正的，故高阶N-C公式很少用
+<br>
+<br>
+
+#### N-C公式的余项
+##### 偶数阶Newton-Cotes公式的代数精度能提高到 n+1次
+故当n为偶数时
+$$
+E(f) = \frac{f^{(n+2)}(\xi)}{(n+2)!}\int_a^b xp_{n+1}(x)dx
+$$
+当n为奇数时
+$$
+E(f) = \frac{f^{(n+1)}(\xi)}{(n+1)!}\int_a^b p_{n+1}(x)dx
+$$
+<br>
+<br>
+
+### 复化的N-C公式
+#### 复化梯形公式
+$$
+T_n = \frac{h}{2}\sum_{i=0}^{n-1}[f(x_i) + f(x_{i+1})] \\
+= \frac{h}{2}[f(a) + 2\sum_{i=1}^{n-1}f(x_i) + f(b)]
+$$
+
+##### 加细T2n = 1/2(Tn+Un)
+$$
+T_{2n} = \frac{h}{4}\sum_{i=0}^{n-1}[f(x_i)+2f(x_{i+\frac{1}{2}}) + f(x_{i+1})]
+$$
+$$
+U_n = h\sum_{i=0}^{n-1}f(x_{i+\frac{1}{2}})\\
+T_{2n}=\frac{1}{2}(T_n+U_n)
+$$
+
+##### 余项
+$$
+E_n(f) = -\frac{b-a}{12}h^2f''(\eta)
+$$
+<br>
+<br>
+
+#### 复化Simpson公式
+$$
+S_n = \frac{h}{6}\sum_{i=0}^{n-1}[f(x_i)+4f(x_{i+\frac{1}{2}})+f(x_{i+1})] \\
+S_n = \frac{h}{6}[f(a) + 4 \sum_{i=0}^{n-1}f(x_{i+\frac{1}{2}}) + 2\sum_{i=1}^{n-1}f(x_i) + f(b)]
+$$
+$$
+S_n = \frac{1}{3}T_n+\frac{2}{3}U_n \\
+= \frac{4T_{2n} - T_n}{4-1}
+$$
+
+#### 复化Cotes公式
+公式略
+$$
+C_n = \frac{4^2S_{2n}-S_n}{4^2-1}
+$$
+<br>
+<br>
+
+### Romberg积分法
+#### Richardson 外推
+若函数逼近序列可有如下形式
+$$
+\begin{cases}
+    f_0(h) = f(h),\\
+    f_m(h) = \frac{f_{m-1}(\rho h) - \rho^{\gamma_m}f_{m-1}(h)}{1-\rho^{\gamma_m}}
+\end{cases}
+$$
+则有余项
+$$
+E = \sum_{j=1}^{+\infty}a_jh^{\gamma_j}
+$$
+
+#### Romburg积分法
+$$
+\begin{cases}
+    T_0(h) = T(h) \\
+    \\
+
+    T_m(h) = \frac{T_{m-1}(\frac{h}{2}) - (\frac{1}{2})^{2m}T_{m-1}(h)}{1-(\frac{1}{2})^{2m}} \\ss
+    \\
+    =\frac{4^mT_{m-1}(\frac{h}{2})-T_{m-1}(h)}{4^m-1}
+\end{cases}
 $$
